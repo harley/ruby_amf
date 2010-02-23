@@ -71,9 +71,10 @@ module RubyAMF
                 @methods[obj.class.name]=Hash.new
               end
               mapping[:methods].each do |method|
-                if method == key
-                  @methods["#{key}"] = value
-                end
+                @methods["#{key}"] = value if method == key
+              end
+              mapping[:attributes].each do |attr|
+                obj.send("#{key}=", value) if attr==key
               end
             end
           else
@@ -111,7 +112,6 @@ module RubyAMF
 
       #moved logic here so AMF3 and AMF0 can use it
       def self.get_vo_for_incoming(obj,action_class_name)
-        p "porra do caralho 1"
         ruby_obj = VoUtil.get_ruby_class(action_class_name).new
         if ruby_obj.kind_of?(ActiveRecord::Base)
           obj.each_pair{|key, value| VoUtil.set_value(ruby_obj, key, value)}

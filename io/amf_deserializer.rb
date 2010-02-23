@@ -79,6 +79,7 @@ module RubyAMF
 
           #Grab the type of the element
           type = read_byte
+          p "header type: #{type}"
 
           #Turn the element into real data
           value = read(type)
@@ -254,8 +255,7 @@ module RubyAMF
           #A string isn't stored as a reference if it is the empty string
           #thanks Karl von Randow for this
           if length > 0
-            str = String.new(readn(length)) #specifically cast as string, as we're reading verbatim from the stream
-            str.force_encoding("utf-8") #convert to utf8
+            str = String.new(readn(length)).force_encoding("utf-8") #specifically cast as string, as we're reading verbatim from the stream
             @stored_strings << str
           end
           return str
@@ -424,6 +424,7 @@ module RubyAMF
       def read_amf3_byte_array # according to the charles amf3 deserializer, they store byte array
         type = read_amf3_integer
         isReference = (type & 0x01) == 0
+
         if isReference
           reference = type >> 1
           if reference < @stored_objects.length
@@ -444,6 +445,12 @@ module RubyAMF
           end
           self.stream_position += length
           @stored_objects << arr
+
+  		    #@fout = File.new("backup/teste", 'wb' )
+          #data = arr.pack('c'*arr.length) rescue arr
+          #@fout.puts(data)
+          #@fout.close
+
           arr
         end
       end
