@@ -119,7 +119,6 @@ module RubyAMF
 
       #AMF3
       def write_amf3(value)
-
         if value == nil
           @stream << "\001" # represents an amf3 null
 

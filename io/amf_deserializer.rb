@@ -24,7 +24,7 @@ module RubyAMF
 
       #do an entire read operation on a complete amf request
       def rubyamf_read(amfobj)
-        RequestStore.amf_encoding = 'amf0'
+        RequestStore.amf_encoding = 'amf3' #amf0 cause serialization problems
         @amfobj = amfobj
         @stream = @amfobj.input_stream
         preamble
@@ -255,7 +255,8 @@ module RubyAMF
           #A string isn't stored as a reference if it is the empty string
           #thanks Karl von Randow for this
           if length > 0
-            str = String.new(readn(length)).force_encoding("utf-8") #specifically cast as string, as we're reading verbatim from the stream
+            #str = String.new(readn(length)).force_encoding("utf-8") #specifically cast as string, as we're reading verbatim from the stream
+            str = String.new(readn(length)) #specifically cast as string, as we're reading verbatim from the stream
             @stored_strings << str
           end
           return str
